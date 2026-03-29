@@ -1,0 +1,5 @@
+{
+  "name": "Smart Farming IoT + AI",
+  "description": "A modern IoT and AI-powered Smart Farming System for real-time monitoring, crop prediction, and disease detection.",
+  "requestFramePermissions": ["camera"]
+}
