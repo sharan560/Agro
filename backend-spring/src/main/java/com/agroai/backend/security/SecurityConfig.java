@@ -33,6 +33,7 @@ public class SecurityConfig {
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
+                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .requestMatchers("/", "/api/health", "/api/test", "/api/auth/**", "/predict").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/sensors/**", "/api/debug/thingspeak").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/weather", "/api/device/status").permitAll()
@@ -53,7 +54,10 @@ public class SecurityConfig {
 
         // Keep local dev origins working even when switching between localhost and 127.0.0.1.
         allowedOriginPatterns.add("http://localhost:*");
+        allowedOriginPatterns.add("https://agro-roan-mu.vercel.app/");
         allowedOriginPatterns.add("http://127.0.0.1:*");
+        allowedOriginPatterns.add("https://*.vercel.app");
+        allowedOriginPatterns.add("https://*.onrender.com");
 
         configuration.setAllowedOriginPatterns(allowedOriginPatterns);
         configuration.addAllowedHeader("*");
