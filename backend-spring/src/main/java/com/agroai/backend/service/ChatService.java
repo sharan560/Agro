@@ -25,12 +25,7 @@ public class ChatService {
     private final ThingSpeakService thingSpeakService;
     private final ChatMessageRepository chatMessageRepository;
 
-    public ChatService(
-        AppProperties properties,
-        RestTemplate restTemplate,
-        ThingSpeakService thingSpeakService,
-        ChatMessageRepository chatMessageRepository
-    ) {
+    public ChatService(AppProperties properties, RestTemplate restTemplate, ThingSpeakService thingSpeakService, ChatMessageRepository chatMessageRepository) {
         this.properties = properties;
         this.restTemplate = restTemplate;
         this.thingSpeakService = thingSpeakService;

@@ -6,7 +6,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "chats")
 public class ChatMessage {
-
     @Id
     private String id;
     private String userId;

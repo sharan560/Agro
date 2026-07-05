@@ -284,27 +284,11 @@ const CropPrediction = () => {
 
       console.error("Prediction error:", err);
 
-      setError(err.response?.data?.message || "Prediction failed. Could not connect to ML model.");
+      const errorMessage = err.response?.data?.message || "Prediction failed. Could not connect to ML model.";
 
-      
+      setError(errorMessage);
 
-      // Fallback to mock data if API fails
-
-      const fallbackResults = [
-
-        { crop: "Papaya", suitability: 64.0415 },
-
-        { crop: "Coconut", suitability: 30.1440 },
-
-        { crop: "Orange", suitability: 2.3602 },
-
-        { crop: "Jute", suitability: 1.3415 },
-
-        { crop: "Rice", suitability: 1.0259 }
-
-      ];
-
-      setResults(fallbackResults);
+      setResults(null);
 
     } finally {
 

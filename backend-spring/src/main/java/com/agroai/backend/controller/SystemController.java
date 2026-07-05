@@ -56,7 +56,8 @@ public class SystemController {
                 "port", environment.getProperty("server.port", "3000"),
                 "nodeEnv", properties.getNodeEnv(),
                 "hasGeminiKey", properties.getGeminiApiKey() != null && !properties.getGeminiApiKey().isBlank(),
-                "hasMongoDB", environment.getProperty("spring.data.mongodb.uri") != null
+                "hasMongoDB", environment.getProperty("MONGODB_URI") != null
+                    || environment.getProperty("SPRING_DATA_MONGODB_URI") != null
             )
         );
     }

@@ -400,114 +400,6 @@ const DiseaseDetection = () => {
 
     
 
-    // Immediate mock response for testing (bypass backend)
-
-    console.log("🔄 Using immediate mock response for testing");
-
-    const currentSeason = getSeasonFromWeather();
-
-    const mockResult = {
-
-      success: true,
-
-      disease: "Tomato Early Blight",
-
-      confidence: 85,
-
-      symptoms: ["Dark brown spots on leaves", "Yellowing around spots", "Leaf drop"],
-
-      treatment: ["Apply copper-based fungicide", "Remove infected leaves", "Improve air circulation"],
-
-      prevention: ["Water plants at base", "Ensure proper spacing", "Use resistant varieties"],
-
-      severity: "Medium",
-
-      
-
-      // Comprehensive agricultural analysis
-
-      diseaseReason: "Caused by Alternaria solani fungus, thrives in warm humid conditions with poor air circulation",
-
-      
-
-      economicImpact: {
-
-        currentMarketPrice: "₹40 per kg",
-
-        estimatedLoss: "₹15,000-₹25,000 per acre",
-
-        marketDemand: "High demand for quality tomatoes",
-
-        affectedArea: `${agriculturalData.fieldArea || "1"} acre(s)`,
-
-        totalLoss: agriculturalData.fieldArea ? `₹${parseInt(agriculturalData.fieldArea) * 20000}` : "₹20,000"
-
-      },
-
-      
-
-      recommendations: {
-
-        immediate: ["Apply fungicide immediately", "Remove infected plant parts", "Quarantine affected area"],
-
-        shortTerm: ["Monitor neighboring plants", "Adjust irrigation schedule", "Improve drainage"],
-
-        longTerm: ["Crop rotation next season", "Use disease-resistant varieties", "Implement preventive spraying schedule"],
-
-        marketStrategy: ["Focus on quality remaining produce", "Consider early harvest if severe", "Explore local markets for smaller quantities"]
-
-      },
-
-      
-
-      fertilizerAnalysis: {
-
-        current: agriculturalData.fertilizersUsed || "NPK 19-19-19",
-
-        recommended: "Increase potassium, reduce nitrogen during disease period",
-
-        alternative: "Organic compost + neem cake combination",
-
-        applicationMethod: "Soil drenching + foliar spray"
-
-      },
-
-      
-
-      // Auto-detected season info
-
-      seasonInfo: {
-
-        current: currentSeason,
-
-        weatherBased: true,
-
-        temperature: weatherData?.current?.temperature || 25,
-
-        humidity: weatherData?.current?.humidity || 60,
-
-        recommendations: currentSeason.includes("Monsoon") ? "Increase fungicide frequency" : "Monitor humidity levels"
-
-      },
-
-      
-
-      fallback: true,
-
-      note: "Comprehensive agricultural analysis with auto-detected season - backend deployment pending"
-
-    };
-
-    
-
-    setResult(mockResult);
-
-    setLoading(false);
-
-    return;
-
-
-
     try {
 
       // Create FormData for file upload
@@ -539,6 +431,10 @@ const DiseaseDetection = () => {
       if (response.data && response.data.success) {
 
         const prediction = response.data;
+        const rawDiseaseName = prediction.disease || prediction.class || prediction.predicted_class || "Unknown";
+        const normalizedDiseaseName = String(rawDiseaseName).replaceAll("_", " ").trim();
+        const confidenceValue = Number(prediction.confidence || prediction.probability || 0);
+        const confidencePercent = confidenceValue <= 1 ? confidenceValue * 100 : confidenceValue;
 
         
 
@@ -546,9 +442,9 @@ const DiseaseDetection = () => {
 
         const formattedResult = {
 
-          diseaseName: prediction.disease || prediction.class || "Unknown",
+          diseaseName: normalizedDiseaseName,
 
-          confidence: prediction.confidence || prediction.probability || 0,
+          confidence: Number(confidencePercent.toFixed(2)),
 
           symptoms: prediction.symptoms || [],
 
@@ -556,18 +452,19 @@ const DiseaseDetection = () => {
 
           prevention: prediction.prevention || [],
 
-          severity: prediction.severity || "Medium"
+          severity: prediction.severity || "Medium",
+
+          diseaseReason: prediction.diseaseReason || "",
+
+          aiTips: prediction.aiTips || []
 
         };
 
         
 
         setResult(formattedResult);
-
       } else {
-
         setError(response.data?.message || "Failed to analyze the image");
-
       }
 
     } catch (err) {
