@@ -247,10 +247,8 @@ const CropPrediction = () => {
         soil_temp: sensors?.temperature || 25, // Use sensor temperature as soil temp
 
         env_temp: weatherData?.temperature || sensors?.temperature || 30, // Use weather API temp for env temp
-          } else if (response.data && response.data.success === false) {
-            throw new Error(response.data.message || response.data.error || "Prediction failed");
 
-            throw new Error("Unexpected response from prediction service");
+        moisture: sensors?.soilMoisture || 50, // Use sensor moisture
 
       };
 
