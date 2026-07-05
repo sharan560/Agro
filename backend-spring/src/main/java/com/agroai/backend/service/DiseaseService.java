@@ -38,9 +38,8 @@ public class DiseaseService {
             return Map.of("success", false, "message", "No image file provided");
         }
 
-        List<String> urls = new ArrayList<>();
-        urls.add(properties.getMlModel().getUrl());
-        urls.addAll(properties.getMlModel().getFallbackUrls());
+       List<String> urls = new ArrayList<>();
+        urls.add("https://crop-disease-70gb.onrender.com/predict");
 
         Exception lastError = null;
         for (String url : urls) {

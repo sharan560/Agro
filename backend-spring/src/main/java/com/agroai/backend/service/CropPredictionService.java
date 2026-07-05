@@ -1,8 +1,5 @@
 package com.agroai.backend.service;
 
-import com.agroai.backend.config.AppProperties;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
@@ -16,77 +13,63 @@ import org.springframework.web.client.RestTemplate;
 @Service
 public class CropPredictionService {
 
-    private final AppProperties properties;
+    // Change this if your endpoint is different
+    private static final String ML_API_URL =
+            "https://croppredictor-hqfk.onrender.com/predict";
+
     private final RestTemplate restTemplate;
 
-    public CropPredictionService(AppProperties properties, RestTemplate restTemplate) {
-        this.properties = properties;
+    public CropPredictionService(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
     }
 
     public Map<String, Object> predict(Map<String, Object> request) {
+
         if (request == null
-            || !request.containsKey("soil_type")
-            || !request.containsKey("soil_temp")
-            || !request.containsKey("env_temp")
-            || !request.containsKey("moisture")) {
+                || !request.containsKey("soil_type")
+                || !request.containsKey("soil_temp")
+                || !request.containsKey("env_temp")
+                || !request.containsKey("moisture")) {
+
             return Map.of(
-                "success", false,
-                "message", "Missing required fields: soil_type, soil_temp, env_temp, moisture"
+                    "success", false,
+                    "message", "Missing required fields: soil_type, soil_temp, env_temp, moisture"
             );
         }
 
-        List<String> modelUrls = buildModelUrls();
+        try {
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
 
-        Exception lastError = null;
-        for (String url : modelUrls) {
-            try {
-                HttpHeaders headers = new HttpHeaders();
-                headers.setContentType(MediaType.APPLICATION_JSON);
+            HttpEntity<Map<String, Object>> entity =
+                    new HttpEntity<>(request, headers);
 
-                HttpEntity<Map<String, Object>> entity = new HttpEntity<>(request, headers);
-                ResponseEntity<Map<String, Object>> response = restTemplate.exchange(
-                    url,
-                    HttpMethod.POST,
-                    entity,
-                    new ParameterizedTypeReference<>() {}
-                );
+            ResponseEntity<Map<String, Object>> response =
+                    restTemplate.exchange(
+                            ML_API_URL,
+                            HttpMethod.POST,
+                            entity,
+                            new ParameterizedTypeReference<Map<String, Object>>() {}
+                    );
 
-                Map<String, Object> body = response.getBody();
-                if (body != null && body.containsKey("top_predictions")) {
-                    return body;
-                }
+            Map<String, Object> body = response.getBody();
 
-                if (body != null && body.containsKey("success") && Boolean.FALSE.equals(body.get("success"))) {
-                    lastError = new IllegalStateException(String.valueOf(body.getOrDefault("message", "Crop prediction failed")));
-                }
-            } catch (Exception ex) {
-                lastError = ex;
+            if (body != null) {
+                return body;
             }
-        }
 
-        return Map.of(
-            "success", false,
-            "message", "Crop prediction service unavailable",
-            "error", lastError == null ? "Unknown error" : lastError.getMessage()
-        );
+            return Map.of(
+                    "success", false,
+                    "message", "Empty response from ML API"
+            );
+
+        } catch (Exception ex) {
+
+            return Map.of(
+                    "success", false,
+                    "message", "Crop prediction service unavailable",
+                    "error", ex.getMessage()
+            );
+        }
     }
-
-    private List<String> buildModelUrls() {
-        List<String> modelUrls = new ArrayList<>();
-
-        if (properties.getMlModel() != null && properties.getMlModel().getUrl() != null && !properties.getMlModel().getUrl().isBlank()) {
-            modelUrls.add(properties.getMlModel().getUrl());
-        }
-
-        if (properties.getMlModel() != null && properties.getMlModel().getFallbackUrls() != null) {
-            for (String fallbackUrl : properties.getMlModel().getFallbackUrls()) {
-                if (fallbackUrl != null && !fallbackUrl.isBlank() && !modelUrls.contains(fallbackUrl)) {
-                    modelUrls.add(fallbackUrl);
-                }
-            }
-        }
-
-        return modelUrls;
-    }
-}
+}   
