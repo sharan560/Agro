@@ -247,8 +247,10 @@ const CropPrediction = () => {
         soil_temp: sensors?.temperature || 25, // Use sensor temperature as soil temp
 
         env_temp: weatherData?.temperature || sensors?.temperature || 30, // Use weather API temp for env temp
+          } else if (response.data && response.data.success === false) {
+            throw new Error(response.data.message || response.data.error || "Prediction failed");
 
-        moisture: sensors?.soilMoisture || 50, // Use sensor moisture
+            throw new Error("Unexpected response from prediction service");
 
       };
 
@@ -272,9 +274,13 @@ const CropPrediction = () => {
 
         setResults(response.data.top_predictions);
 
+      } else if (response.data && response.data.success === false) {
+
+        throw new Error(response.data.message || response.data.error || "Prediction failed");
+
       } else {
 
-        throw new Error("Invalid response format from ML model");
+        throw new Error("Unexpected response from prediction service");
 
       }
 
@@ -284,7 +290,7 @@ const CropPrediction = () => {
 
       console.error("Prediction error:", err);
 
-      const errorMessage = err.response?.data?.message || "Prediction failed. Could not connect to ML model.";
+      const errorMessage = err.response?.data?.message || err.message || "Prediction failed. Could not connect to ML model.";
 
       setError(errorMessage);
 

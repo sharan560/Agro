@@ -1,5 +1,7 @@
 package com.agroai.backend.service;
 
+import com.agroai.backend.config.AppProperties;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import org.springframework.core.ParameterizedTypeReference;
@@ -14,9 +16,11 @@ import org.springframework.web.client.RestTemplate;
 @Service
 public class CropPredictionService {
 
+    private final AppProperties properties;
     private final RestTemplate restTemplate;
 
-    public CropPredictionService(RestTemplate restTemplate) {
+    public CropPredictionService(AppProperties properties, RestTemplate restTemplate) {
+        this.properties = properties;
         this.restTemplate = restTemplate;
     }
 
@@ -32,9 +36,7 @@ public class CropPredictionService {
             );
         }
 
-        List<String> modelUrls = List.of(
-            "https://croppredictor-hqfk.onrender.com/predict"
-        );
+        List<String> modelUrls = buildModelUrls();
 
         Exception lastError = null;
         for (String url : modelUrls) {
@@ -54,6 +56,10 @@ public class CropPredictionService {
                 if (body != null && body.containsKey("top_predictions")) {
                     return body;
                 }
+
+                if (body != null && body.containsKey("success") && Boolean.FALSE.equals(body.get("success"))) {
+                    lastError = new IllegalStateException(String.valueOf(body.getOrDefault("message", "Crop prediction failed")));
+                }
             } catch (Exception ex) {
                 lastError = ex;
             }
@@ -64,5 +70,23 @@ public class CropPredictionService {
             "message", "Crop prediction service unavailable",
             "error", lastError == null ? "Unknown error" : lastError.getMessage()
         );
+    }
+
+    private List<String> buildModelUrls() {
+        List<String> modelUrls = new ArrayList<>();
+
+        if (properties.getMlModel() != null && properties.getMlModel().getUrl() != null && !properties.getMlModel().getUrl().isBlank()) {
+            modelUrls.add(properties.getMlModel().getUrl());
+        }
+
+        if (properties.getMlModel() != null && properties.getMlModel().getFallbackUrls() != null) {
+            for (String fallbackUrl : properties.getMlModel().getFallbackUrls()) {
+                if (fallbackUrl != null && !fallbackUrl.isBlank() && !modelUrls.contains(fallbackUrl)) {
+                    modelUrls.add(fallbackUrl);
+                }
+            }
+        }
+
+        return modelUrls;
     }
 }
