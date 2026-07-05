@@ -28,8 +28,9 @@ public class ChatController {
 
     @PostMapping
     public Map<String, Object> sendMessage(@Valid @RequestBody ChatDtos.ChatRequest request, Authentication authentication) {
-        AuthenticatedUser user = (AuthenticatedUser) authentication.getPrincipal();
-        return chatService.sendMessage(user.userId(), request.message(), properties.isMockMode());
+        String userId = (authentication != null && authentication.getPrincipal() instanceof AuthenticatedUser user)
+            ? user.userId() : "anonymous-user";
+        return chatService.sendMessage(userId, request.message(), properties.isMockMode());
     }
 
     @GetMapping("/history")
@@ -38,7 +39,8 @@ public class ChatController {
         @RequestParam(name = "limit", defaultValue = "50") int limit,
         @RequestParam(name = "page", defaultValue = "1") int page
     ) {
-        AuthenticatedUser user = (AuthenticatedUser) authentication.getPrincipal();
-        return chatService.history(user.userId(), limit, page, properties.isMockMode());
+        String userId = (authentication != null && authentication.getPrincipal() instanceof AuthenticatedUser user)
+            ? user.userId() : "anonymous-user";
+        return chatService.history(userId, limit, page, properties.isMockMode());
     }
 }

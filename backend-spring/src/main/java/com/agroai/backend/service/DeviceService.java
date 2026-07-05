@@ -18,55 +18,67 @@ public class DeviceService {
     @SuppressWarnings("unchecked")
     public Map<String, Object> status() {
         boolean deviceOnline = false;
-        Map<String, Object> sensorData = null;
+        Map<String, Object> sensorData = new java.util.HashMap<>();
 
         try {
-            Map<String, Object> feedsData = thingSpeakService.fetchFeeds(1);
+            Map<String, Object> feedsData = thingSpeakService.fetchFeeds(100);
             List<Map<String, Object>> feeds = (List<Map<String, Object>>) feedsData.getOrDefault("feeds", List.of());
             if (!feeds.isEmpty()) {
                 Map<String, Object> latest = feeds.get(feeds.size() - 1);
+                Instant updatedAt = Instant.parse(String.valueOf(latest.get("created_at")));
+                long minutes = Duration.between(updatedAt, Instant.now()).toMinutes();
+                deviceOnline = minutes <= 5;
 
-                // ThingSpeak mapping in this project:
-                // field1 = temperature, field2 = soil moisture, field3 = motor, field4 = humidity
-                Double temperature = parseDouble(latest.get("field1"));
-                Double moisture = parseDouble(latest.get("field2"));
-                Double humidity = parseDouble(latest.get("field4"));
-                String motorValue = String.valueOf(latest.get("field3"));
+                Double temperature = null;
+                Double moisture = null;
+                Double humidity = null;
+                String motorValue = null;
+
+                // Scan backward to find the latest valid non-null sensor values
+                for (int i = feeds.size() - 1; i >= 0; i--) {
+                    Map<String, Object> feed = feeds.get(i);
+                    if (temperature == null) temperature = parseDouble(feed.get("field1"));
+                    if (moisture == null) moisture = parseDouble(feed.get("field2"));
+                    if (humidity == null) humidity = parseDouble(feed.get("field4"));
+                    if (motorValue == null && feed.get("field3") != null) {
+                        motorValue = String.valueOf(feed.get("field3"));
+                    }
+                }
+
+                // If still null, set defaults or leave null
+                if (motorValue == null) motorValue = "0";
 
                 boolean validMoisture = moisture != null && moisture >= 0 && moisture <= 100;
                 boolean validTemperature = temperature != null && temperature >= -50 && temperature <= 80;
-                boolean validHumidity = humidity == null || (humidity >= 0 && humidity <= 100);
-
-                if (validMoisture && validTemperature && validHumidity) {
-                    Instant updatedAt = Instant.parse(String.valueOf(latest.get("created_at")));
-                    long minutes = Duration.between(updatedAt, Instant.now()).toMinutes();
-                    deviceOnline = minutes <= 5;
-
-                    // Always return latest valid values even if device is currently offline.
-                    sensorData = Map.of(
-                        "moisture", moisture,
-                        "temperature", temperature,
-                        "humidity", humidity,
-                        "motorStatus", "1".equals(motorValue) ? "Running" : "Standby",
-                        "motorValue", motorValue,
-                        "lastUpdated", latest.get("created_at"),
-                        "minutesAgo", minutes
-                    );
+                if (!validMoisture || !validTemperature) {
+                    deviceOnline = false;
                 }
+
+                sensorData.put("moisture", moisture);
+                sensorData.put("temperature", temperature);
+                sensorData.put("humidity", humidity);
+                sensorData.put("motorStatus", "1".equals(motorValue) ? "Running" : "Standby");
+                sensorData.put("motorValue", motorValue);
+                sensorData.put("field1", temperature);
+                sensorData.put("field2", moisture);
+                sensorData.put("field3", motorValue);
+                sensorData.put("field4", humidity);
+                sensorData.put("lastUpdated", latest.get("created_at"));
+                sensorData.put("minutesAgo", minutes);
             }
         } catch (Exception ignored) {
             deviceOnline = false;
         }
 
-        return Map.of(
-            "success", true,
-            "online", deviceOnline,
-            "sensorData", sensorData,
-            "message", deviceOnline
-                ? "Device is online and transmitting data"
-                : (sensorData != null ? "Device is offline, showing latest valid ThingSpeak data" : "Device is offline or not transmitting valid data"),
-            "timestamp", Instant.now().toString()
-        );
+        Map<String, Object> result = new java.util.HashMap<>();
+        result.put("success", true);
+        result.put("online", deviceOnline);
+        result.put("sensorData", sensorData.isEmpty() ? null : sensorData);
+        result.put("message", deviceOnline
+            ? "Device is online and transmitting data"
+            : (!sensorData.isEmpty() ? "Device is offline, showing last valid sensor data from " + sensorData.get("minutesAgo") + " minutes ago" : "Device is offline or not transmitting valid data"));
+        result.put("timestamp", Instant.now().toString());
+        return result;
     }
 
     private Double parseDouble(Object val) {

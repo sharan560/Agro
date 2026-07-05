@@ -1,4 +1,5 @@
 com\agroai\backend\dto\MotorDtos.class
+com\agroai\backend\service\CropPredictionService.class
 com\agroai\backend\dto\AuthDtos$AuthResponse.class
 com\agroai\backend\service\DiseaseService$1.class
 com\agroai\backend\AgroAiBackendApplication.class
@@ -14,6 +15,7 @@ com\agroai\backend\dto\AuthDtos$UserView.class
 com\agroai\backend\dto\ChatDtos$ChatResponse.class
 com\agroai\backend\security\AuthenticatedUser.class
 com\agroai\backend\controller\ChatController.class
+com\agroai\backend\config\MongoConfig.class
 com\agroai\backend\dto\AuthDtos.class
 com\agroai\backend\service\ChatService$1.class
 com\agroai\backend\controller\DiseaseController.class
@@ -21,6 +23,7 @@ com\agroai\backend\service\WeatherService$2.class
 com\agroai\backend\dto\WeatherDtos$WeatherRequest$Location.class
 com\agroai\backend\service\MotorService.class
 com\agroai\backend\security\JwtAuthenticationFilter.class
+com\agroai\backend\service\DiseaseService$3.class
 com\agroai\backend\controller\WeatherController.class
 com\agroai\backend\dto\WeatherDtos$WeatherRequest.class
 com\agroai\backend\controller\DeviceController.class
@@ -38,6 +41,7 @@ com\agroai\backend\dto\AuthDtos$LoginRequest.class
 com\agroai\backend\config\AppProperties.class
 com\agroai\backend\config\AppProperties$ThingSpeak.class
 com\agroai\backend\dto\WeatherDtos.class
+com\agroai\backend\service\CropPredictionService$1.class
 com\agroai\backend\dto\AuthDtos$SignupRequest.class
 com\agroai\backend\service\DiseaseService$2.class
 com\agroai\backend\config\AppProperties$MlModel.class
@@ -45,4 +49,5 @@ com\agroai\backend\service\AuthService.class
 com\agroai\backend\service\DeviceService.class
 com\agroai\backend\service\WeatherService.class
 com\agroai\backend\model\User.class
+com\agroai\backend\controller\CropPredictionController.class
 com\agroai\backend\controller\SystemController.class

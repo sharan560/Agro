@@ -1,8 +1,10 @@
 C:\Users\asus\Desktop\COLLEGE\ACHIEVMENTS\PROJECT\AgroAI\AgroAi\AgroAi\backend-spring\src\main\java\com\agroai\backend\AgroAiBackendApplication.java
 C:\Users\asus\Desktop\COLLEGE\ACHIEVMENTS\PROJECT\AgroAI\AgroAi\AgroAi\backend-spring\src\main\java\com\agroai\backend\config\AppProperties.java
 C:\Users\asus\Desktop\COLLEGE\ACHIEVMENTS\PROJECT\AgroAI\AgroAi\AgroAi\backend-spring\src\main\java\com\agroai\backend\config\BeansConfig.java
+C:\Users\asus\Desktop\COLLEGE\ACHIEVMENTS\PROJECT\AgroAI\AgroAi\AgroAi\backend-spring\src\main\java\com\agroai\backend\config\MongoConfig.java
 C:\Users\asus\Desktop\COLLEGE\ACHIEVMENTS\PROJECT\AgroAI\AgroAi\AgroAi\backend-spring\src\main\java\com\agroai\backend\controller\AuthController.java
 C:\Users\asus\Desktop\COLLEGE\ACHIEVMENTS\PROJECT\AgroAI\AgroAi\AgroAi\backend-spring\src\main\java\com\agroai\backend\controller\ChatController.java
+C:\Users\asus\Desktop\COLLEGE\ACHIEVMENTS\PROJECT\AgroAI\AgroAi\AgroAi\backend-spring\src\main\java\com\agroai\backend\controller\CropPredictionController.java
 C:\Users\asus\Desktop\COLLEGE\ACHIEVMENTS\PROJECT\AgroAI\AgroAi\AgroAi\backend-spring\src\main\java\com\agroai\backend\controller\DeviceController.java
 C:\Users\asus\Desktop\COLLEGE\ACHIEVMENTS\PROJECT\AgroAI\AgroAi\AgroAi\backend-spring\src\main\java\com\agroai\backend\controller\DiseaseController.java
 C:\Users\asus\Desktop\COLLEGE\ACHIEVMENTS\PROJECT\AgroAI\AgroAi\AgroAi\backend-spring\src\main\java\com\agroai\backend\controller\MotorController.java
@@ -23,6 +25,7 @@ C:\Users\asus\Desktop\COLLEGE\ACHIEVMENTS\PROJECT\AgroAI\AgroAi\AgroAi\backend-s
 C:\Users\asus\Desktop\COLLEGE\ACHIEVMENTS\PROJECT\AgroAI\AgroAi\AgroAi\backend-spring\src\main\java\com\agroai\backend\security\SecurityConfig.java
 C:\Users\asus\Desktop\COLLEGE\ACHIEVMENTS\PROJECT\AgroAI\AgroAi\AgroAi\backend-spring\src\main\java\com\agroai\backend\service\AuthService.java
 C:\Users\asus\Desktop\COLLEGE\ACHIEVMENTS\PROJECT\AgroAI\AgroAi\AgroAi\backend-spring\src\main\java\com\agroai\backend\service\ChatService.java
+C:\Users\asus\Desktop\COLLEGE\ACHIEVMENTS\PROJECT\AgroAI\AgroAi\AgroAi\backend-spring\src\main\java\com\agroai\backend\service\CropPredictionService.java
 C:\Users\asus\Desktop\COLLEGE\ACHIEVMENTS\PROJECT\AgroAI\AgroAi\AgroAi\backend-spring\src\main\java\com\agroai\backend\service\DeviceService.java
 C:\Users\asus\Desktop\COLLEGE\ACHIEVMENTS\PROJECT\AgroAI\AgroAi\AgroAi\backend-spring\src\main\java\com\agroai\backend\service\DiseaseService.java
 C:\Users\asus\Desktop\COLLEGE\ACHIEVMENTS\PROJECT\AgroAI\AgroAi\AgroAi\backend-spring\src\main\java\com\agroai\backend\service\MotorService.java

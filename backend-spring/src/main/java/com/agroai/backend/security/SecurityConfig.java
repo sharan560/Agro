@@ -34,7 +34,7 @@ public class SecurityConfig {
             .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                .requestMatchers("/", "/api/health", "/api/test", "/api/auth/**", "/predict").permitAll()
+                .requestMatchers("/", "/api/health", "/api/test", "/api/auth/**", "/predict", "/error", "/api/chat/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/sensors/**", "/api/debug/thingspeak").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/weather", "/api/device/status").permitAll()
                 .requestMatchers("/actuator/health").permitAll()
